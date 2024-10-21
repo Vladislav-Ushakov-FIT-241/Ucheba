@@ -1,0 +1,70 @@
+using System;
+namespace savage
+{
+    class Program
+    {
+        static void Main()
+        {
+            Console.WriteLine("Введите количество чисел");
+            int n = int.Parse(Console.ReadLine());
+            Console.WriteLine("Введите числа");
+            int countMin = 0;
+            int i = 0;
+            int flag = 0;
+            int flag2 = 0;
+            int pred = -10000;
+            int chet = 0;
+            int max1 = 0, max2 = 0;
+            while (i < n)
+            {
+                i++;
+                int a = int.Parse(Console.ReadLine());
+                // 1 задача
+                if ((a < pred)|| (a > pred && flag == 1))
+                {
+                    flag++;
+                }
+                else
+                {
+                    flag = 0;
+                }
+
+                if (flag == 2)
+                {
+                    countMin++;
+                    flag = 0;
+                    
+                }
+                pred = a;
+                // 2 задача
+                if (a % 2 == 0)
+                {
+                    flag2++;
+                }
+                // 3 задача
+                if (a > max1)
+                {
+                    max2 = max1;
+                    max1 = a;
+                }
+                else if (a > max2)
+                {
+                    max2 = a;
+                }
+            }
+            Console.WriteLine($"Количество локальных минимумов: {countMin}");
+            if (flag2==n)
+            {
+                Console.WriteLine("Все числа четные");
+            }
+            else
+            {
+                Console.WriteLine("Не все числа четные");
+            }
+            Console.WriteLine($"Максимумы: {max2}, {max1}");
+
+
+
+        }
+    }
+}
