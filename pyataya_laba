@@ -1,0 +1,102 @@
+using System;
+namespace savage
+{
+    class Program
+    {
+        static void Main()
+        {
+            
+            Console.WriteLine("Введите количество чисел");
+            int n = int.Parse(Console.ReadLine());
+            int i = 0;
+            int j = 0;
+            int x;
+            int y;
+            int z;
+            int flag = 0;
+            int count = 0;
+            int otv1 = 0;
+            int k = 0;
+            int countpoint = 0;
+            int q = 0;
+            int[] a = new int[n];
+            int[] b = new int[n];
+            int[] c = new int[n];
+            Console.WriteLine("Введите числа");
+            for (i = 0; i < n; i++)
+            {
+                a[i] = int.Parse(Console.ReadLine());
+                b[i] = a[i];
+            }
+            for (j = 0; j < n; ++j)
+            {
+                x = a[j];
+                y = a[j];
+                z = a[j];
+
+                // 1 задача
+                while (x > 0)
+                {
+                    count += 1;
+                    if (x % 2 == 0)
+                    {
+                        flag++;
+                    }
+                    x /= 10;
+                }
+                if (flag == count)
+                {
+                    otv1++;
+                }
+                flag = 0;
+                count = 0;
+
+
+                // 2 задача
+                for (k = 0; k < n; ++k)
+                {
+                    y = a[k];
+                    if (y % 2 == 0)
+                    {
+                        a[k] = 0;
+                    }
+                    else
+                    {
+                        a[k] = 1;
+                    }
+
+                }
+            }
+            // 3 задача
+            for (q = 0; q < n; ++q)
+            {
+                if (b[q] % 2 == 0)
+                {
+                    c[countpoint] = b[q];
+                    countpoint++;
+                }
+            }
+            for (q = 0; q < n; ++q)
+            {
+                if (b[q] % 2 == 1)
+                {
+                    c[countpoint] = b[q];
+                    countpoint++;
+                }
+            }
+
+            Console.WriteLine($"У {otv1} элементов все цифры четные");
+            Console.WriteLine("Вывод массива для проверки 2 задания");
+            for (z = 0; z < n; ++z)
+            {
+                Console.WriteLine(a[z]);
+            }
+            Console.WriteLine("Вывод массива для проверки 3 задания");
+            for (q = 0; q < n; ++q)
+            {
+                Console.WriteLine(c[q]);
+            }
+
+        }
+    }
+}
