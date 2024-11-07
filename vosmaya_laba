@@ -1,0 +1,69 @@
+using System;
+using System.Text.RegularExpressions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+namespace savage
+{
+    class Program
+    {
+        static void Main()
+        {
+            // 1 задание
+            Console.WriteLine("Убрать лишние пробелы в строке: ");
+            string stroka = "Владислав                                  Ушаков   ФИТ -                                       241";
+            stroka = Regex.Replace(stroka, @"\s+", " ");
+            Console.WriteLine(stroka);
+            Console.WriteLine();
+
+            //2 задание
+            Console.WriteLine("Проверка на слова палиндромы:");
+            string stroka2 = "заказ мотор шалаш колесо семь потоп";//да нет да нет нет да
+            string[] slova = stroka2.Split(' ');
+            for (int i = 0; i < slova.Length; i++)
+            {
+                string local = slova[i];
+                Console.WriteLine(local.SequenceEqual(local.Reverse()));
+                
+            }
+            Console.WriteLine();
+
+            //3 задание
+            Console.WriteLine("Является ли строка палиндромом?");
+            string stroka31 = "аргентина манит негра";
+            string stroka32 =  stroka31.Replace(" ", "");
+            Console.WriteLine(stroka32.SequenceEqual(stroka32.Reverse()));
+            Console.WriteLine();
+
+            //4 задание
+            Console.WriteLine("Сколько строк будет введено?");
+            int n = int.Parse(Console.ReadLine());
+            int k = 0;
+            string gl = "аеёиоуыэюя";
+            while(k < n)
+            {
+                k++;
+                int countgl = 0;
+                Console.WriteLine("Введите строку");
+                string stroka4 = Convert.ToString(Console.ReadLine());
+                stroka4 = stroka4.Replace(" ", "");
+                Console.WriteLine("Гласных букв больше, чем согласных?");
+                
+                for (int i = 0; i < stroka4.Length; i++)
+                {
+                    for (int j = 0; j < gl.Length; j++)
+                    {
+                        if (stroka4[i] == gl[j])
+                            countgl++;
+                    }
+                }
+                if (countgl > stroka4.Length - countgl)
+                    Console.WriteLine("YEEEEEEEEEEES");
+                else
+                    Console.WriteLine("no");
+            }
+            
+          
+            
+
+        }
+    }
+}
