@@ -1,0 +1,27 @@
+using System;
+namespace savage
+{
+    class Program
+    {
+        static void Main()
+        {
+            int count = 0;
+            Console.WriteLine("Введите количество чисел");
+            int n = int.Parse(Console.ReadLine());
+            Console.WriteLine("Введите числа");
+            int pred = int.Parse(Console.ReadLine());
+            int now = int.Parse(Console.ReadLine());
+            for (int i = 2; i < n; i++)
+            {
+                int next = int.Parse(Console.ReadLine());
+                if (now < pred && now < next)
+                {
+                    count += 1;
+                }
+                pred = now;
+                now = next;
+            }
+            Console.WriteLine($"количество локальных минимумов: {count}");
+        }
+    }
+}
