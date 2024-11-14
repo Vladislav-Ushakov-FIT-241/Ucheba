@@ -1,0 +1,78 @@
+using System;
+namespace savage
+{
+    class Program
+    {
+        static void Main()
+        {
+            Console.WriteLine("Введите количество чисел");
+            int n = int.Parse(Console.ReadLine());
+            Console.WriteLine("Введите числа");
+            int pred = 1111111;
+            int i = 0;
+            int flag1 = 0;
+            int flag2 = 0;
+            int flag3 = 0;
+            int otv1 = 0;
+            int otv2 = 100000;
+            int otv3 = -100000000;
+            while (i < n)
+            {
+                i++;
+                int a = int.Parse(Console.ReadLine());
+                // 1 задача
+                if (a == pred)
+                {
+                    flag1++;
+                }
+                else
+                {
+                    flag1 = 0;
+                }
+                if (flag1 > otv1)
+                {
+                    otv1 = flag1;
+                }
+                pred = a;
+                // 2 задача
+                if (Math.Abs(a) % 2 == 0)
+                {
+                    flag2++;
+                }
+                else
+                {
+                    if (flag2 < otv2 && flag2 > 0)
+                    {
+                        otv2 = flag2;
+                    }
+                    flag2 = 0;
+                }
+
+                // 3 задача
+                if (Math.Abs(a) % 2 == 0)
+                {
+                    flag3 += a;
+                    if (flag3 > otv3)
+                    {
+                        otv3 = flag3;
+                    }
+                }
+                else
+                {
+                    flag3 = 0;
+                }
+                
+            }
+            if (flag2 < otv2 && flag2 > 0)
+            {
+                otv2 = flag2;
+            }
+            Console.WriteLine($"ответ на задание 1: {otv1 + 1} элементов");
+            Console.WriteLine($"ответ на задание 2: {otv2} элементов");
+            Console.WriteLine($"ответ на задание 3: {otv3}");
+
+
+
+        }
+    }
+}
