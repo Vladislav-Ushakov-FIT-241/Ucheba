@@ -6,7 +6,7 @@ namespace savage
         static void Main()
         {
             Console.WriteLine("Введите строки");
-            
+
             while (true)
             {
                 string line = Console.ReadLine();
@@ -16,26 +16,35 @@ namespace savage
                 }
                 int count = 1;
                 int max = 0;
-                for (int i = 1; i < line.Length; i++)
+                if (line.Length == 1)
                 {
-                    if (((line[i] == 'b') && (line[i-1] == 'a')) || ((line[i] == 'c') && (line[i - 1] == 'b')) || ((line[i] == 'a') && (line[i - 1] == 'c')))
+                    if (line=="a" || line == "b" || line == "c")
                     {
-                        count++;
-                        
-                        if (count > max)
-                        {
-                            max = count;
-                        }
-                    }
-                    else
-                    {
-                        count = 1;
+                        Console.WriteLine("1");
                     }
                 }
-                Console.WriteLine(max);
+                else
+                {
+                    for (int i = 1; i < line.Length; i++)
+                    {
+                        if (((line[i] == 'b') && (line[i - 1] == 'a')) || ((line[i] == 'c') && (line[i - 1] == 'b')) || ((line[i] == 'a') && (line[i - 1] == 'c')))
+                        {
+                            count++;
 
+                            if (count > max)
+                            {
+                                max = count;
+                            }
+                        }
+                        else
+                        {
+                            count = 1;
+                        }
+                    }
+                    Console.WriteLine(max);
+                }
             }
-            
+
         }
     }
 }
