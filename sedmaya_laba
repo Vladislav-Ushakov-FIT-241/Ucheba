@@ -1,0 +1,81 @@
+using System;
+namespace savage
+{
+    class Program
+    {
+        static void Main()
+        {
+            
+
+            
+            int[][] bigmas = new int[4][];
+
+            
+            for (int i = 0; i < 4; i++)
+            {
+                int chet = 0;
+                int nechet = 0;
+                int chillnum = -1;
+                int summas = 0;
+                
+                Console.Write($"Введите размер массива {i + 1}: ");
+                int raz = int.Parse(Console.ReadLine());
+
+                
+                bigmas[i] = new int[raz];
+
+                
+                Console.WriteLine($"Введите {raz} элементов для массива {i + 1}:");
+                for (int j = 0; j < raz; j++)
+                {
+                    Console.Write($"Элемент {j + 1}: ");
+                    int a = int.Parse(Console.ReadLine());
+                    bigmas[i][j] = a;
+                    if (a%2 == 0)
+                    {
+                        chet++;
+                    }
+                    else
+                    {
+                        nechet++;
+                    }
+                           
+                    
+                }
+                for (int j = 0; j < raz; j++)
+                {
+                    summas+=bigmas[i][j];
+                }
+                for (int j = 0; j < raz; j++)
+                {
+                    if (bigmas[i][j] > summas - bigmas[i][j])
+                    {
+                        chillnum = j;
+                    }
+                }
+                if (chillnum == -1)
+                {
+                    Console.WriteLine($"В {i+1} массиве нету элемента, большего чем сумма остальных");
+                }
+                else
+                {
+                    Console.WriteLine($"Элемент, больший суммы остальных, стоит на {chillnum+1} месте (считая от 1)");
+                }
+                Console.WriteLine($"Количетсво четных обьектов: {chet}");
+                Console.WriteLine($"Количетсво нечетных обьектов: {nechet}");
+            }
+
+            
+            Console.WriteLine("Ступенчатый массив:");
+            for (int i = 0; i < 4; i++)
+            {
+                Console.Write($"Массив {i + 1}: ");
+                for (int j = 0; j < bigmas[i].Length; j++)
+                {
+                    Console.Write($"{bigmas[i][j]} ");
+                }
+                Console.WriteLine();
+            }
+        }
+    }
+}
