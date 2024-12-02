@@ -1,0 +1,147 @@
+using System;
+namespace savage
+{
+    class Program
+    {
+        static void Main()
+        {
+            int m, n;
+            m = int.Parse(Console.ReadLine());
+            n = int.Parse(Console.ReadLine());
+            int[,] a = new int[m, n];
+            for (int i = 0; i < m; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    a[i, j] = int.Parse(Console.ReadLine());
+                }
+            }
+            Console.WriteLine("Исходный массив");
+            for (int i = 0; i < m; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    Console.Write(a[i, j] + "\t"); ;
+                }
+                Console.WriteLine();
+            }
+            
+            int[,] b = new int[m, n];
+            for (int i = 0; i < m; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    b[i, j] = a[i, j];
+                }
+            }
+            int k = 0;
+            while (k < n*m)
+            {   
+                k += 1;
+                for (int j = 0; j < n-1; j++)
+                {
+                    int sum1 = 0, sum2 = 0;
+                    for (int i = 0; i < m; i ++)
+                    {
+                        sum1 += b[i, j];
+                        sum2 += b[i, j+1];
+                    }
+                    if (sum2<sum1)
+                    {
+                        for (int i = 0; i < m; i++)
+                        {
+                            int vremenno = b[i, j];
+                            b[i, j] = b[i, j + 1];
+                            b[i, j+1]= vremenno;
+                        }
+                    }
+                }
+            }
+            
+            Console.WriteLine("Массив, у которого столбцы отсортированы во возрастанию сумм");
+            for (int i = 0; i < m; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    Console.Write(b[i, j] + "\t"); ;
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine("Пары строк, с одинаковыми элементами (нумерация с 1):");
+            for(int l = 0; l < m; l++)
+            {
+                int suml = 0;
+                int prl = 1;
+                int count0l= 0;
+                for (int j = 0; j < n; j++)
+                {
+                    suml += a[l, j];
+                    prl *= a[l, j];
+                    if (a[l, j]==0)
+                    {
+                        count0l++;
+                    }
+                    
+                }
+                for (int i = l+1; i < m; i++)
+                {
+                    int sumi = 0;
+                    int pri = 1;
+                    int count0i = 0;
+                    for (int j = 0; j < n; j++)
+                    {
+                        sumi += a[i, j];
+                        pri *= a[i, j];
+                        if (a[i, j] == 0)
+                        {
+                            count0i++;
+                        }
+                    }
+                    if (suml == sumi && prl == pri && count0l==count0i)
+                    {
+                        Console.WriteLine($"{l+1} и {i+1}");
+                    }
+                }
+            }
+            for (int i = 0; i < m; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    int el = a[i, j];
+                    int mini= 99999;
+                    int maxi= -9999;
+                    int minj = 99999;
+                    int maxj = -9999;
+                    for (int y = 0; y < n; y++)
+                    {
+                        if (a[i, y]>maxj)
+                        {
+                            maxj = a[i, y];
+                        }
+                        if (a[i, y] < minj)
+                        {
+                            minj = a[i, y];
+                        }
+                    }
+                    for (int x = 0; x < m; x++)
+                    {
+                        if (a[x, j] > maxi)
+                        {
+                            maxi = a[x, j];
+                        }
+                        if (a[x, j] < mini)
+                        {
+                            mini = a[x, j];
+                        }
+                    }
+                    
+                    if ((el==mini && el==maxj)||(el==minj && el==maxi))
+                    {
+                        Console.WriteLine($"Положение мин-макс элемена (нумерация с 1): {i+1} строка, {j+1} столбец");
+                    }
+                }
+                
+            }
+        }
+    }
+}
