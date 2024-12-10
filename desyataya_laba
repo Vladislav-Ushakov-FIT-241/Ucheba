@@ -1,0 +1,72 @@
+using System;
+
+public class MyClass
+{
+    public int a;
+    public int b;
+    
+    public MyClass()
+    {
+        a = 0;
+        b = 0;
+    }
+
+    public MyClass(int value)
+    {
+        a = value;
+        b = 0;
+    }
+
+    public MyClass(int value1, int value2)
+    {
+        a = value1;
+        b = value2;
+    }
+
+    public int summa()
+    {
+        return a + b;
+    }
+
+    public int proiz()
+    {
+        return a * b;
+    }
+
+    public int razn()
+    {
+        return a - b;
+    }
+
+    public double del()
+    {
+        if (b == 0)
+        {
+            throw new DivideByZeroException("На ноль делить нельзя!");
+        }
+        return (double)a / b;
+    }
+}
+
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        MyClass obj1 = new MyClass(); 
+        MyClass obj2 = new MyClass(5); 
+        MyClass obj3 = new MyClass(10, 3); 
+
+        Console.WriteLine("Сумма: " + obj3.summa());
+        Console.WriteLine("Произведение: " + obj3.proiz());
+        Console.WriteLine("Разность: " + obj3.razn());
+
+        try
+        {
+            Console.WriteLine("Деление: " + obj3.del());
+        }
+        catch (DivideByZeroException ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+}
