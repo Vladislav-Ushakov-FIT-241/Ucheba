@@ -1,0 +1,207 @@
+using System;
+
+public class Student
+{
+    public string FullName { get; set; }
+    public int BirthYear { get; set; }
+    public string MotherName { get; set; }
+    public string FatherName { get; set; }
+    public string Address { get; set; }
+
+    public Student(string fullName, int birthYear, string motherName = null, string fatherName = null, string address = null)
+    {
+        FullName = fullName;
+        BirthYear = birthYear;
+        MotherName = motherName;
+        FatherName = fatherName;
+        Address = address;
+    }
+
+    public override string ToString()
+    {
+        return $"ФИО: {FullName}, Год рождения: {BirthYear}, Мама: {MotherName ?? "Не указана"}, Папа: {FatherName ?? "Не указан"}, Адрес: {Address ?? "Не указан"}";
+    }
+}
+
+public class Program
+{
+    private static Student[] students = new Student[100];
+    private static int studentCount = 0;
+
+    public static void Main(string[] args)
+    {
+        while (true)
+        {
+            Console.WriteLine("\nМеню:");
+            Console.WriteLine("1. Заполнить данные ученика");
+            Console.WriteLine("2. Изменить данные ученика");
+            Console.WriteLine("3. Поиск учеников по начальной букве ФИО");
+            Console.WriteLine("4. Поиск учеников по адресу");
+            Console.WriteLine("5. Поиск учеников по году рождения");
+            Console.WriteLine("6. Выход");
+            Console.Write("Выберите действие: ");
+            var choice = Console.ReadLine();
+
+            switch (choice)
+            {
+                case "1":
+                    FillStudentData();
+                    break;
+                case "2":
+                    ModifyStudentData();
+                    break;
+                case "3":
+                    SearchStudentsByInitial();
+                    break;
+                case "4":
+                    SearchStudentsByAddress();
+                    break;
+                case "5":
+                    SearchStudentsByBirthYear();
+                    break;
+                case "6":
+                    return;
+                default:
+                    Console.WriteLine("Неверный выбор. Попробуйте снова.");
+                    break;
+            }
+        }
+    }
+
+    private static void FillStudentData()
+    {
+        if (studentCount >= students.Length)
+        {
+            Console.WriteLine("Массив учеников полон.");
+            return;
+        }
+
+        Console.Write("Введите ФИО ученика: ");
+        string fullName = Console.ReadLine();
+        Console.Write("Введите год рождения ученика: ");
+        int birthYear = int.Parse(Console.ReadLine());
+        Console.Write("Введите ФИО мамы (или оставьте пустым): ");
+        string motherName = Console.ReadLine();
+        Console.Write("Введите ФИО папы (или оставьте пустым): ");
+        string fatherName = Console.ReadLine();
+        Console.Write("Введите адрес (или оставьте пустым): ");
+        string address = Console.ReadLine();
+
+        students[studentCount++] = new Student(fullName, birthYear, motherName, fatherName, address);
+        Console.WriteLine("Данные ученика успешно добавлены.");
+    }
+
+    private static void ModifyStudentData()
+    {
+        if (studentCount == 0)
+        {
+            Console.WriteLine("Массив учеников пуст.");
+            return;
+        }
+
+        Console.Write("Введите ФИО ученика для изменения данных: ");
+        string fullNameToModify = Console.ReadLine();
+
+        for (int i = 0; i < studentCount; i++)
+        {
+            if (students[i].FullName.Equals(fullNameToModify, StringComparison.OrdinalIgnoreCase))
+            {
+                Console.Write("Введите новый год рождения ученика: ");
+                students[i].BirthYear = int.Parse(Console.ReadLine());
+                Console.Write("Введите новое ФИО мамы (или оставьте пустым): ");
+                students[i].MotherName = Console.ReadLine();
+                Console.Write("Введите новое ФИО папы (или оставьте пустым): ");
+                students[i].FatherName = Console.ReadLine();
+                Console.Write("Введите новый адрес (или оставьте пустым): ");
+                students[i].Address = Console.ReadLine();
+
+                Console.WriteLine("Данные ученика успешно изменены.");
+                return;
+            }
+        }
+
+        Console.WriteLine("Ученик с таким ФИО не найден.");
+    }
+
+    private static void SearchStudentsByInitial()
+    {
+        if (studentCount == 0)
+        {
+            Console.WriteLine("Массив учеников пуст.");
+            return;
+        }
+
+        Console.Write("Введите начальную букву ФИО: ");
+        char initial = char.ToUpper(Console.ReadKey().KeyChar);
+        Console.WriteLine();
+
+        bool found = false;
+        foreach (var student in students)
+        {
+            if (student != null && student.FullName.StartsWith(initial.ToString(), StringComparison.OrdinalIgnoreCase))
+            {
+                Console.WriteLine(student);
+                found = true;
+            }
+        }
+
+        if (!found)
+        {
+            Console.WriteLine($"Ученики, начинающиеся на букву '{initial}', не найдены.");
+        }
+    }
+
+    private static void SearchStudentsByAddress()
+    {
+        if (studentCount == 0)
+        {
+            Console.WriteLine("Массив учеников пуст.");
+            return;
+        }
+
+        Console.Write("Введите улицу для поиска: ");
+        string street = Console.ReadLine();
+
+        bool found = false;
+        foreach (var student in students)
+        {
+            if (student != null && student.Address != null && student.Address.Contains(street, StringComparison.OrdinalIgnoreCase))
+            {
+                Console.WriteLine(student);
+                found = true;
+            }
+        }
+
+        if (!found)
+        {
+            Console.WriteLine($"Ученики, проживающие на улице '{street}', не найдены.");
+        }
+    }
+
+    private static void SearchStudentsByBirthYear()
+    {
+        if (studentCount == 0)
+        {
+            Console.WriteLine("Массив учеников пуст.");
+            return;
+        }
+
+        Console.Write("Введите год рождения для поиска: ");
+        int yearToSearch = int.Parse(Console.ReadLine());
+
+        bool found = false;
+        foreach (var student in students)
+        {
+            if (student != null && student.BirthYear == yearToSearch)
+            {
+                Console.WriteLine(student);
+                found = true;
+            }
+        }
+
+        if (!found)
+        {
+            Console.WriteLine($"Ученики, родившиеся в {yearToSearch} году, не найдены.");
+        }
+    }
+}
