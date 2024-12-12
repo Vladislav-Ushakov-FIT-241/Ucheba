@@ -52,16 +52,16 @@ namespace savage
                 if (Math.Abs(a) % 2 == 0)
                 {
                     flag3 += a;
+                }
+                else
+                {
                     if (flag3 > otv3)
                     {
                         otv3 = flag3;
                     }
-                }
-                else
-                {
                     flag3 = 0;
                 }
-                
+
             }
             if (flag2 < otv2 && flag2 > 0)
             {
