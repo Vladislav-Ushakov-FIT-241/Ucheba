@@ -1,0 +1,115 @@
+using System;
+class Zhivotnoe
+{
+    public string Naimenovanie { get; set; }
+    public Zhivotnoe(string naimenovanie)
+    {
+        Naimenovanie = naimenovanie;
+    }
+    public override string ToString()
+    {
+        return $"Наименование: {Naimenovanie}";
+    }
+}
+class Ptitsa : Zhivotnoe
+{
+    public string Obitanie { get; set; }
+    public string KudaLetitZimovat { get; set; }
+    public Ptitsa(string naimenovanie, string obitanie, string kudaLetitZimovat)
+        : base(naimenovanie)
+    {
+        Obitanie = obitanie;
+        KudaLetitZimovat = kudaLetitZimovat;
+    }
+    public override string ToString()
+    {
+        return base.ToString() + $", Обитание: {Obitanie}, Зимовка: {KudaLetitZimovat}";
+    }
+}
+class Mlekopitayushchee : Zhivotnoe
+{
+    public string Obitanie { get; set; }
+    public double Ves { get; set; }
+    public Mlekopitayushchee(string naimenovanie, string obitanie, double ves)
+        : base(naimenovanie)
+    {
+        Obitanie = obitanie;
+        Ves = ves;
+    }
+    public override string ToString()
+    {
+        return base.ToString() + $", Обитание: {Obitanie}, Вес: {Ves} кг";
+    }
+}
+class Program
+{
+    static void Main()
+    {
+        Console.Write("Введите количество птиц: ");
+        int kolichestvoPtits = int.Parse(Console.ReadLine());
+        Ptitsa[] ptitsy = new Ptitsa[kolichestvoPtits];
+        for (int i = 0; i < kolichestvoPtits; i++)
+        {
+            Console.WriteLine($"\nВвод данных для птицы {i + 1}:");
+            Console.Write("Наименование: ");
+            string naimenovanie = Console.ReadLine();
+            Console.Write("Обитание: ");
+            string obitanie = Console.ReadLine();
+            Console.Write("Куда летит зимовать: ");
+            string zimovka = Console.ReadLine();
+            ptitsy[i] = new Ptitsa(naimenovanie, obitanie, zimovka);
+        }
+        Console.Write("Введите количество млекопитающих: ");
+        int kolichestvoMlekopitayushchikh = int.Parse(Console.ReadLine());
+        Mlekopitayushchee[] mlekopitayushchie = new Mlekopitayushchee[kolichestvoMlekopitayushchikh];
+        for (int i = 0; i < kolichestvoMlekopitayushchikh; i++)
+        {
+            Console.WriteLine($"\nВвод данных для млекопитающего {i + 1}:");
+            Console.Write("Наименование: ");
+            string naimenovanie = Console.ReadLine();
+            Console.Write("Обитание: ");
+            string obitanie = Console.ReadLine();
+            Console.Write("Вес (кг): ");
+            double ves = double.Parse(Console.ReadLine());
+            mlekopitayushchie[i] = new Mlekopitayushchee(naimenovanie, obitanie, ves);
+        }
+        Console.Write("\nВведите обитание для выборки: ");
+        string obitanieDlyaVybori = Console.ReadLine();
+        Console.WriteLine("\nПтицы с данным обитанием:");
+        foreach (var ptitsa in ptitsy)
+        {
+            if (ptitsa.Obitanie.Equals(obitanieDlyaVybori, StringComparison.OrdinalIgnoreCase))
+            {
+                Console.WriteLine(ptitsa);
+            }
+        }
+        Console.WriteLine("\nМлекопитающие с данным обитанием:");
+        foreach (var mlekopitayushchee in mlekopitayushchie)
+        {
+            if (mlekopitayushchee.Obitanie.Equals(obitanieDlyaVybori, StringComparison.OrdinalIgnoreCase))
+            {
+                Console.WriteLine(mlekopitayushchee);
+            }
+        }
+        Console.Write("\nВведите место зимовки для выборки птиц: ");
+        string zimovkaDlyaVybori = Console.ReadLine();
+        Console.WriteLine("\nПтицы с данным местом зимовки:");
+        foreach (var ptitsa in ptitsy)
+        {
+            if (ptitsa.KudaLetitZimovat.Equals(zimovkaDlyaVybori, StringComparison.OrdinalIgnoreCase))
+            {
+                Console.WriteLine(ptitsa);
+            }
+        }
+        Console.Write("\nВведите минимальный вес для выборки млекопитающих: ");
+        double minimalnyVes = double.Parse(Console.ReadLine());
+        Console.WriteLine("\nМлекопитающие с весом больше или равным заданному:");
+        foreach (var mlekopitayushchee in mlekopitayushchie)
+        {
+            if (mlekopitayushchee.Ves >= minimalnyVes)
+            {
+                Console.WriteLine(mlekopitayushchee);
+            }
+        }
+    }
+}
