@@ -1,0 +1,106 @@
+using System;
+class Program
+{
+    static void Main()
+    {
+        Stantsiya stantsiya = new Stantsiya();
+        while (true)
+        {
+            Console.WriteLine("\nМеню:");
+            Console.WriteLine("1. Ввод данных");
+            Console.WriteLine("2. Вывод информации о поездах по пункту назначения");
+            Console.WriteLine("3. Вывод информации о поездах, отправляющихся после заданного времени");
+            Console.WriteLine("4. Выход");
+            Console.Write("Выберите пункт меню: ");
+            string vibor = Console.ReadLine();
+            switch (vibor)
+            {
+                case "1":
+                    stantsiya.VvodDannykh();
+                    break;
+                case "2":
+                    Console.Write("Введите пункт назначения: ");
+                    string naznachenie = Console.ReadLine();
+                    stantsiya.VyvodPoezdovPoNaznacheniyu(naznachenie);
+                    break;
+                case "3":
+                    Console.Write("Введите время (чч:мм): ");
+                    TimeSpan vremya = TimeSpan.Parse(Console.ReadLine());
+                    stantsiya.VyvodPoezdovPosleVremeni(vremya);
+                    break;
+                case "4":
+                    return;
+            }
+        }
+    }
+}
+class Poezd
+{
+    public int NomerPoezda { get; set; }
+    public string PunktOtpravleniya { get; set; }
+    public string PunktNaznacheniya { get; set; }
+    public TimeSpan VremyaOtpravleniya { get; set; }
+    public Poezd(int nomerPoezda, string punktOtpravleniya, string punktNaznacheniya, TimeSpan vremyaOtpravleniya)
+    {
+        NomerPoezda = nomerPoezda;
+        PunktOtpravleniya = punktOtpravleniya;
+        PunktNaznacheniya = punktNaznacheniya;
+        VremyaOtpravleniya = vremyaOtpravleniya;
+    }
+    public override string ToString()
+    {
+        return $"Номер поезда: {NomerPoezda}, Пункт отправления: {PunktOtpravleniya}, Пункт назначения: {PunktNaznacheniya}, Время отправления: {VremyaOtpravleniya}";
+    }
+}
+class Stantsiya
+{
+    public string Nazvanie { get; set; }
+    private Poezd[] Poezda;
+    public void VvodDannykh()
+    {
+        Console.Write("Введите количество поездов: ");
+        int kol = int.Parse(Console.ReadLine());
+        Poezda = new Poezd[kol];
+
+        for (int i = 0; i < kol; i++)
+        {
+            Console.WriteLine($"\nВвод данных для поезда {i + 1}:");
+
+            Console.Write("Номер поезда: ");
+            int nomerPoezda = int.Parse(Console.ReadLine());
+
+            Console.Write("Пункт отправления: ");
+            string punktOtpravleniya = Console.ReadLine();
+
+            Console.Write("Пункт назначения: ");
+            string punktNaznacheniya = Console.ReadLine();
+
+            Console.Write("Время отправления (чч:мм): ");
+            TimeSpan vremyaOtpravleniya = TimeSpan.Parse(Console.ReadLine());
+
+            Poezda[i] = new Poezd(nomerPoezda, punktOtpravleniya, punktNaznacheniya, vremyaOtpravleniya);
+        }
+    }
+    public void VyvodPoezdovPoNaznacheniyu(string punktNaznacheniya)
+    {
+        Console.WriteLine($"\nПоезда с пунктом назначения \"{punktNaznacheniya}\":");
+        foreach (var poezd in Poezda)
+        {
+            if (poezd.PunktNaznacheniya.Equals(punktNaznacheniya, StringComparison.OrdinalIgnoreCase))
+            {
+                Console.WriteLine(poezd);
+            }
+        }
+    }
+    public void VyvodPoezdovPosleVremeni(TimeSpan vremya)
+    {
+        Console.WriteLine($"\nПоезда, отправляющиеся после {vremya}:");
+        foreach (var poezd in Poezda)
+        {
+            if (poezd.VremyaOtpravleniya > vremya)
+            {
+                Console.WriteLine(poezd);
+            }
+        }
+    }
+}
