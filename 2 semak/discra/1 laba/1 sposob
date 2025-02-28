@@ -1,0 +1,18 @@
+a=[[0,0,0,0,1],[0,0,1,1,0],[0,1,0,1,0],[0,1,1,0,0],[1,0,0,0,0]]
+count=1
+b=[1]
+p=[x for x in range(2, len(a)+1)]
+for i in range(len(a)):
+    if i==len(b):
+        count+=1
+        k=len(b)
+        for _ in range(k):
+            b[_]=0
+        b.append(p[0])
+        p.remove(p[0])
+    if b[i] not in p:
+        for j in range(len(a)):
+            if a[b[i]-1][j]==1 and (j+1) not in b:
+                b.append(j+1)
+                p.remove(j+1)
+print("Количество элементов связанности:", count)
