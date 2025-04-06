@@ -1,0 +1,35 @@
+using System;
+using System.Collections.Generic;
+class Program
+{
+    static void Main(string[] args)
+    {
+        List<int> numbers = new List<int> {5, 1, 2, 2, 5, 3, 4, 4, 4, 5};
+        HashSet<int> uniqueNumbers = new HashSet<int>(numbers);
+        Dictionary<int, int> frequency = new Dictionary<int, int>();
+
+        foreach (var number in numbers)
+        {
+            if (frequency.ContainsKey(number))
+            {
+                frequency[number]++;
+            }
+            else
+            {
+                frequency[number] = 1;
+            }
+        }
+
+        Console.WriteLine("Уникальные элементы:");
+        foreach (var uniqueNumber in uniqueNumbers)
+        {
+            Console.WriteLine(uniqueNumber);
+        }
+
+        Console.WriteLine("\nЧастота появления элементов:");
+        foreach (var kvp in frequency)
+        {
+            Console.WriteLine($"Число {kvp.Key} встречается {kvp.Value} раз");
+        }
+    }
+}
