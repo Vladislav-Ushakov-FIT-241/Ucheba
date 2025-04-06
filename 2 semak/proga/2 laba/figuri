@@ -1,0 +1,69 @@
+using System;
+public class Shape
+{
+    public string Name { get; set; }
+
+    public Shape(string name)
+    {
+        Name = name;
+    }
+}
+
+public interface Calculation
+{
+    double CalculatePerimeter();
+    double CalculateArea();
+}
+
+public class Circle : Shape, Calculation
+{
+    public double Radius { get; set; }
+
+    public Circle(string name, double radius) : base(name)
+    {
+        Radius = radius;
+    }
+
+    public double CalculatePerimeter() => 2 * Math.PI * Radius;
+    public double CalculateArea() => Math.PI * Radius * Radius;
+}
+
+public class Square : Shape, Calculation
+{
+    public double SideLength { get; set; }
+
+    public Square(string name, double sideLength) : base(name)
+    {
+        SideLength = sideLength;
+    }
+
+    public double CalculatePerimeter() => 4 * SideLength;
+    public double CalculateArea() => SideLength * SideLength;
+}
+
+public class Triangle : Shape, Calculation
+{
+    public double SideLength { get; set; }
+
+    public Triangle(string name, double sideLength) : base(name)
+    {
+        SideLength = sideLength;
+    }
+
+    public double CalculatePerimeter() => 3 * SideLength;
+    public double CalculateArea() => (Math.Sqrt(3) / 4) * SideLength * SideLength;
+}
+
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        Circle circle = new Circle("Круг", 5);
+        Square square = new Square("Квадрат", 4);
+        Triangle triangle = new Triangle("Треугольник", 6);
+
+        Console.WriteLine($"Фигура: {circle.Name}, Периметр: {circle.CalculatePerimeter():F2}, Площадь: {circle.CalculateArea():F2}");
+        Console.WriteLine($"Фигура: {square.Name}, Периметр: {square.CalculatePerimeter():F2}, Площадь: {square.CalculateArea():F2}");
+        Console.WriteLine($"Фигура: {triangle.Name}, Периметр: {triangle.CalculatePerimeter():F2}, Площадь: {triangle.CalculateArea():F2}");
+    }
+}
