@@ -1,1 +1,27 @@
+import heapq
+def prim(graph):
+    total_weight = 0
+    visited = set()
+    min_heap = []
+    start_vertex = list(graph.keys())[0]
+    visited.add(start_vertex)
+    for neighbor, weight in graph[start_vertex]:
+        heapq.heappush(min_heap, (weight, start_vertex, neighbor))
+    while min_heap:
+        weight, from_vertex, to_vertex = heapq.heappop(min_heap)
+        if to_vertex not in visited:
+            visited.add(to_vertex)
+            total_weight += weight
+            for neighbor, weight in graph[to_vertex]:
+                if neighbor not in visited:
+                    heapq.heappush(min_heap, (weight, to_vertex, neighbor))
+    return total_weight
+
+graph = {
+    'A': [('B', 1), ('C', 3)],
+    'B': [('A', 1), ('C', 1), ('D', 6)],
+    'C': [('A', 3), ('B', 1), ('D', 5)],
+    'D': [('B', 6), ('C', 5)]
+}
+print("Минимальный вес остовного дерева:", prim(graph))
 
