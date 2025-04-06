@@ -1,0 +1,53 @@
+using System;
+using System.Collections.Generic;
+public class BracketChecker
+{
+    public static bool IsCorrect(string expression)
+    {
+        Stack<char> stack = new Stack<char>();
+        Dictionary<char, char> bracketPairs = new Dictionary<char, char>()
+        {
+            { '(', ')' },
+            { '[', ']' },
+            { '{', '}' }
+        };
+
+        foreach (char c in expression)
+        {
+            if (bracketPairs.ContainsKey(c))
+            {
+                stack.Push(c);
+            }
+            else if (bracketPairs.ContainsValue(c))
+            {
+                if (stack.Count == 0)
+                {
+                    return false;
+                }
+
+                char openingBracket = stack.Pop();
+                if (bracketPairs[openingBracket] != c)
+                {
+                    return false;
+                }
+            }
+        }
+
+        return stack.Count == 0;
+    }
+
+    public static void Main(string[] args)
+    {
+        Console.Write("Введите арифметическое выражение: ");
+        string expression = Console.ReadLine();
+
+        if (IsCorrect(expression))
+        {
+            Console.WriteLine("Выражение корректно");
+        }
+        else
+        {
+            Console.WriteLine("Выражение НЕ корректно");
+        }
+    }
+}
