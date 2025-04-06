@@ -1,1 +1,57 @@
+import heapq
+def kruskal(graph):
+    parent = {}
+    rank = {}
+    def make_set(v):
+        parent[v] = v
+        rank[v] = 0
+    def find(v):
+        if parent[v] != v:
+            parent[v] = find(parent[v])
+        return parent[v]
+    def union(v, u):
+        root1 = find(v)
+        root2 = find(u)
+        if root1 != root2:
+            if rank[root1] > rank[root2]:
+                parent[root2] = root1
+            else:
+                parent[root1] = root2
+                if rank[root1] == rank[root2]:
+                    rank[root2] += 1
+            return True
+        return False
+    edges = sorted(graph, key=lambda edge: edge[2])
+    mst = []
+    for u, v, weight in graph:
+        if u not in parent:
+            make_set(u)
+        if v not in parent:
+            make_set(v)
+    for u, v, weight in edges:
+        if union(u, v):
+            mst.append((u, v, weight))
+    return mst
+graph = [
+    ('A', 'B', 1),
+    ('A', 'C', 3),
+    ('B', 'A', 1),
+    ('B', 'C', 1),
+    ('B', 'D', 6),
+    ('C', 'A', 3),
+    ('C', 'B', 1),
+    ('C', 'D', 5),
+    ('D', 'B', 6),
+    ('D', 'C', 5),
+]
+
+mst = kruskal(graph)
+weight_all=0
+print("Минимальное остовное дерево:")
+for u, v, weight in mst:
+    print(f"({u}, {v}): {weight}")
+    weight_all+=weight
+print("Минимальный вес остовного дерева:", weight_all)
+
+
 
