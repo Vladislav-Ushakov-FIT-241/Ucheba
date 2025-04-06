@@ -1,0 +1,78 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+public class PostfixCalculator
+{
+    public static double Calculate(string expression)
+    {
+        Stack<double> stack = new Stack<double>();
+        string[] tokens = expression.Split(' ');
+
+        foreach (string token in tokens)
+        {
+            if (double.TryParse(token, out double number))
+            {
+                stack.Push(number);
+            }
+            else
+            {
+                if (stack.Count < 2)
+                {
+                    throw new ArgumentException("Недостаточно операндов для вычисления");
+                }
+
+                double operand2 = stack.Pop();
+                double operand1 = stack.Pop();
+                double result;
+
+                switch (token)
+                {
+                    case "+":
+                        result = operand1 + operand2;
+                        break;
+                    case "-":
+                        result = operand1 - operand2;
+                        break;
+                    case "*":
+                        result = operand1 * operand2;
+                        break;
+                    case "/":
+                        if (operand2 == 0)
+                        {
+                            throw new DivideByZeroException("Деление на ноль");
+                        }
+                        result = operand1 / operand2;
+                        break;
+                    default:
+                        throw new ArgumentException($"Неизвестная операция: {token}");
+                }
+
+                stack.Push(result);
+            }
+        }
+
+        if (stack.Count != 1)
+        {
+            throw new ArgumentException("Некорректное выражение");
+        }
+
+        return stack.Pop();
+    }
+
+
+    public static void Main(string[] args)
+    {
+        Console.Write("Введите выражение: ");
+        string expression = Console.ReadLine();
+
+        try
+        {
+            double result = Calculate(expression);
+            Console.WriteLine($"Результат: {result}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка: {ex.Message}");
+        }
+    }
+}
