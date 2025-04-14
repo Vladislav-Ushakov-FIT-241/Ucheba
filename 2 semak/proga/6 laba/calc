@@ -1,0 +1,76 @@
+using System;
+
+public delegate int OperationDelegate();
+
+class Calculator
+{
+    public int _first;
+    public int _second;
+
+    public Calculator(int first, int second)
+    {
+        _first = first;
+        _second = second;
+    }
+
+    public int Add()
+    {
+        return _first + _second;
+    }
+
+    public int Subtract()
+    {
+        return _first - _second;
+    }
+
+    public int Multiply()
+    {
+        return _first * _second;
+    }
+
+    public int Divide()
+    {
+        if (_second == 0)
+        {
+            throw new DivideByZeroException("Деление на ноль невозможно");
+        }
+        return _first / _second;
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Calculator calc1 = new Calculator(10, 5);
+        Calculator calc2 = new Calculator(20, 4);
+
+        OperationDelegate firstDelegate = new OperationDelegate(() =>
+        {
+            int sum = calc1.Add();
+            Console.WriteLine($"Сумма: {sum}");
+            int multiplied = sum * calc1._second;
+            Console.WriteLine($"Результат умножения: {multiplied}");
+            int divided = multiplied / calc1._second;
+            Console.WriteLine($"Результат деления: {divided}");
+            return divided;
+        });
+
+        OperationDelegate secondDelegate = new OperationDelegate(() =>
+        {
+            int divided = calc2.Divide(); 
+            Console.WriteLine($"Результат деления: {divided}");
+            int subtracted = divided - calc2._second; 
+            Console.WriteLine($"Результат вычитания: {subtracted}");
+            int multiplied = subtracted * calc2._second; 
+            Console.WriteLine($"Результат умножения: {multiplied}");
+            return multiplied;
+        });
+
+        Console.WriteLine("Операции с первым объектом:");
+        firstDelegate();
+
+        Console.WriteLine("\nОперации со вторым объектом:");
+        secondDelegate();
+    }
+}
