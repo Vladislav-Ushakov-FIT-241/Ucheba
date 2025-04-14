@@ -1,0 +1,66 @@
+using System;
+using System.Collections.Generic;
+
+class Phone
+{
+    public string PhoneNumber { get; set; }
+    public string FullName { get; set; }
+    public string Operator { get; set; }
+
+    public Phone(string phoneNumber, string fullName, string operatorName)
+    {
+        PhoneNumber = phoneNumber;
+        FullName = fullName;
+        Operator = operatorName;
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        List<Phone> phoneList = new List<Phone>
+        {
+            new Phone("1234567890", "Иванов Иван", "МТС"),
+            new Phone("0987654321", "Петров Петр", "Билайн"),
+            new Phone("1112223333", "Сидоров Сидор", "Билайн"),
+            new Phone("4445556666", "Кузнецов Кузьма", "Теле2"),
+            new Phone("7778889999", "Иванов Иван", "МТС"),
+            new Phone("2223334445", "Петров Петр", "Билайн"),
+        };
+
+        string mostFrequentOperator = FindMostFrequentOperator(phoneList);
+        Console.WriteLine($"Чаще всего используемый оператор: {mostFrequentOperator}");
+    }
+
+    static string FindMostFrequentOperator(List<Phone> phones)
+    {
+        Dictionary<string, int> operatorCount = new Dictionary<string, int>();
+
+        foreach (var phone in phones)
+        {
+            if (operatorCount.ContainsKey(phone.Operator))
+            {
+                operatorCount[phone.Operator]++;
+            }
+            else
+            {
+                operatorCount[phone.Operator] = 1;
+            }
+        }
+
+        string mostFrequentOperator = null;
+        int maxCount = 0;
+
+        foreach (var entry in operatorCount)
+        {
+            if (entry.Value > maxCount)
+            {
+                maxCount = entry.Value;
+                mostFrequentOperator = entry.Key;
+            }
+        }
+
+        return mostFrequentOperator;
+    }
+}
