@@ -1,0 +1,68 @@
+using System;
+
+public class Point
+{
+    public double X { get; set; }
+    public double Y { get; set; }
+
+    public Point(double x, double y)
+    {
+        X = x;
+        Y = y;
+    }
+}
+
+public class Field
+{
+    public double XMin { get; }
+    public double YMin { get; }
+    public double XMax { get; }
+    public double YMax { get; }
+
+    public Field(double xMin, double yMin, double xMax, double yMax)
+    {
+        XMin = xMin;
+        YMin = yMin;
+        XMax = xMax;
+        YMax = yMax;
+    }
+
+    public bool IsPointInside(Point point)
+    {
+        return point.X >= XMin && point.X <= XMax && point.Y >= YMin && point.Y <= YMax;
+    }
+}
+
+public class Program
+{
+    private static Random _random = new Random();
+
+    public static void Main(string[] args)
+    {
+        Field field = new Field(0, 0, 2, 2);
+        Point point = new Point(1, 1);
+
+        Console.WriteLine($"Начальная позиция точки: ({point.X}, {point.Y})");
+
+        for (int i = 0; i < 10; i++)
+        {
+            MovePoint(point);
+            Console.WriteLine($"Новая позиция точки: ({point.X}, {point.Y})");
+
+            if (!field.IsPointInside(point))
+            {
+                Console.WriteLine("Точка вышла за пределы поля!");
+                break;
+            }
+        }
+    }
+
+    private static void MovePoint(Point point)
+    {
+        double deltaX = _random.NextDouble() * 2 - 1; 
+        double deltaY = _random.NextDouble() * 2 - 1; 
+
+        point.X += deltaX;
+        point.Y += deltaY;
+    }
+}
