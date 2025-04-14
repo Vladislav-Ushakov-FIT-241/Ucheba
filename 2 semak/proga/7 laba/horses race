@@ -1,0 +1,86 @@
+using System;
+using System.Collections.Generic;
+using System.Threading;
+
+public class Horse
+{
+    public string Name { get; }
+    public double Position { get; private set; }
+
+    public Horse(string name, double startPosition)
+    {
+        Name = name;
+        Position = startPosition;
+    }
+
+    public void Move()
+    {
+        double speed = new Random().NextDouble() * (1.0 - 0.1) + 0.1;
+        Position += speed;
+    }
+}
+
+public class Race
+{
+    private List<Horse> horses;
+    private double finishLine;
+
+    public Race(List<Horse> horses, double finishLine)
+    {
+        this.horses = horses;
+        this.finishLine = finishLine;
+    }
+
+    public void Start()
+    {
+        bool raceFinished = false;
+
+        while (!raceFinished)
+        {
+            foreach (var horse in horses)
+            {
+                horse.Move();
+                Console.WriteLine($"{horse.Name} на позиции {horse.Position:F2}");
+
+                if (horse.Position >= finishLine)
+                {
+                    Console.WriteLine($"Поздравляем! {horse.Name} победила!");
+                    raceFinished = true;
+                    break;
+                }
+            }
+            Thread.Sleep(500);
+        }
+    }
+}
+
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        List<Horse> horses = new List<Horse>
+        {
+            new Horse("Лошадь 1", 0),
+            new Horse("Лошадь 2", 0),
+            new Horse("Лошадь 3", 0)
+        };
+
+        double finishLine = 10.0;
+
+        Console.WriteLine("Лошадь 1 на старте!");
+        Thread.Sleep(700);
+        Console.WriteLine("Лошадь 2 на старте!");
+        Thread.Sleep(700);
+        Console.WriteLine("Лошадь 3 на старте!");
+        Thread.Sleep(500);
+        Console.WriteLine("На старт!");
+        Thread.Sleep(800);
+        Console.WriteLine("Внимание...");
+        Thread.Sleep(1000);
+        Console.WriteLine("ФАРШ!");
+
+        Race race = new Race(horses, finishLine);
+        race.Start();
+    }
+}
+
