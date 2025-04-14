@@ -1,17 +1,18 @@
 using System;
 using System.Collections.Generic;
+
 class Subscriber
 {
     public string Name { get; set; }
-    public string PhoneNumber { get; set; }
+    public List<string> PhoneNumbers { get; set; }
     public string Operator { get; set; }
-    public string Year { get; set; }
+    public int Year { get; set; }
     public string City { get; set; }
 
-    public Subscriber(string name, string phoneNumber, string operatorName, string year, string city)
+    public Subscriber(string name, List<string> phoneNumbers, string operatorName, int year, string city)
     {
         Name = name;
-        PhoneNumber = phoneNumber;
+        PhoneNumbers = phoneNumbers;
         Operator = operatorName;
         Year = year;
         City = city;
@@ -19,7 +20,7 @@ class Subscriber
 
     public override string ToString()
     {
-        return $"{Name}, {PhoneNumber}, {Operator}, {Year}, {City}";
+        return $"Имя: {Name}, Номер: {string.Join(", ", PhoneNumbers)}, Оператор: {Operator}, Год: {Year}, Город: {City}";
     }
 }
 
@@ -29,19 +30,24 @@ class PhoneDirectory
 
     public void AddSubscriber()
     {
-        Console.Write("Введите ФИО абонента: ");
+        Console.Write("Введите имя абонента: ");
         string name = Console.ReadLine();
-        Console.Write("Введите номер телефона: ");
-        string phoneNumber = Console.ReadLine();
-        Console.Write("Введите оператора связи: ");
+
+        Console.Write("Введите номер телефона (можно несколько через запятую): ");
+        List<string> phoneNumbers = new List<string>(Console.ReadLine().Split(','));
+
+        Console.Write("Введите оператора: ");
         string operatorName = Console.ReadLine();
+
         Console.Write("Введите год подключения: ");
-        string year = Console.ReadLine();
+        int year = int.Parse(Console.ReadLine());
+
         Console.Write("Введите город: ");
         string city = Console.ReadLine();
 
-        Subscriber subscriber = new Subscriber(name, phoneNumber, operatorName, year, city);
+        Subscriber subscriber = new Subscriber(name, phoneNumbers, operatorName, year, city);
         subscribers.Add(subscriber);
+
         Console.WriteLine("Абонент добавлен");
     }
 
@@ -49,14 +55,14 @@ class PhoneDirectory
     {
         Console.Write("Введите оператора для поиска: ");
         string operatorName = Console.ReadLine();
-        var results = subscribers.FindAll(sub => sub.Operator.Equals(operatorName, StringComparison.OrdinalIgnoreCase));
+        var results = subscribers.FindAll(s => s.Operator.Equals(operatorName, StringComparison.OrdinalIgnoreCase));
 
         if (results.Count > 0)
         {
-            Console.WriteLine("Найденные абоненты:");
-            foreach (var sub in results)
+            foreach (var subscriber in results)
             {
-                Console.WriteLine(sub);
+                Console.WriteLine("Найденные абоненты:");
+                Console.WriteLine(subscriber);
             }
         }
         else
@@ -68,15 +74,14 @@ class PhoneDirectory
     public void FindByYear()
     {
         Console.Write("Введите год подключения для поиска: ");
-        string year = Console.ReadLine();
-        var results = subscribers.FindAll(sub => sub.Year.Equals(year));
+        int year = int.Parse(Console.ReadLine());
+        var results = subscribers.FindAll(s => s.Year == year);
 
         if (results.Count > 0)
         {
-            Console.WriteLine("Найденные абоненты:");
-            foreach (var sub in results)
+            foreach (var subscriber in results)
             {
-                Console.WriteLine(sub);
+                Console.WriteLine(subscriber);
             }
         }
         else
@@ -89,14 +94,13 @@ class PhoneDirectory
     {
         Console.Write("Введите номер телефона для поиска: ");
         string phoneNumber = Console.ReadLine();
-        var results = subscribers.FindAll(sub => sub.PhoneNumber.Equals(phoneNumber));
+        var results = subscribers.FindAll(s => s.PhoneNumbers.Contains(phoneNumber.Trim()));
 
         if (results.Count > 0)
         {
-            Console.WriteLine("Найденные абоненты:");
-            foreach (var sub in results)
+            foreach (var subscriber in results)
             {
-                Console.WriteLine(sub);
+                Console.WriteLine(subscriber);
             }
         }
         else
@@ -135,7 +139,7 @@ class PhoneDirectory
                     break;
                 case "5":
                     Console.WriteLine("Выход");
-                    return;
+                    return; 
                 default:
                     Console.WriteLine("Некорректный выбор. Пожалуйста, попробуйте снова");
                     break;
