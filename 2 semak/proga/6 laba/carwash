@@ -1,0 +1,85 @@
+using System;
+using System.Collections.Generic;
+
+public delegate void WashCarDelegate(Car car);
+
+public class Car
+{
+    public int Year { get; set; }
+    public string Model { get; set; }
+    public string Color { get; set; }
+    public bool IsDirty { get; set; }
+
+    public Car(int year, string model, string color, bool isDirty)
+    {
+        Year = year;
+        Model = model;
+        Color = color;
+        IsDirty = isDirty;
+    }
+
+    public override string ToString()
+    {
+        return $"{Year} {Model} ({Color}) - Грязная: {IsDirty}";
+    }
+}
+
+class Garage
+{
+    public List<Car> _cars;
+
+    public Garage()
+    {
+        _cars = new List<Car>();
+    }
+
+    public void AddCar(Car car)
+    {
+        _cars.Add(car);
+    }
+
+    public List<Car> GetCars()
+    {
+        return _cars;
+    }
+}
+
+class CarWash
+{
+    public void WashCar(Car car)
+    {
+        if (car.IsDirty)
+        {
+            car.IsDirty = false;
+            Console.WriteLine($"Машина {car.Model} помыта");
+        }
+        else
+        {
+            Console.WriteLine($"Машина {car.Model} уже чистая");
+        }
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        
+        Garage garage = new Garage();
+        garage.AddCar(new Car(2017, "Toyota Camry", "Синий", true));
+        garage.AddCar(new Car(2008, "Honda Accord", "Черный", false));
+        garage.AddCar(new Car(2015, "Ford Focus", "Красный", true));
+        garage.AddCar(new Car(2004, "Nissan Primera", "Черный", false));
+
+        CarWash carWash = new CarWash();
+
+        WashCarDelegate washDelegate = new WashCarDelegate(carWash.WashCar);
+
+        foreach (var car in garage.GetCars())
+        {
+            Console.WriteLine(car);
+            washDelegate(car);
+            Console.WriteLine();
+        }
+    }
+}
