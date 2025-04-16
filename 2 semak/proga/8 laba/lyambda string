@@ -1,0 +1,31 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Program
+{
+    static void Main()
+    {
+        // Создаем список строк
+        List<string> words = new List<string>
+        {
+            "мир",
+            "привет",
+            "молоко",
+            "яблоко",
+            "машина",
+            "книга",
+            "медведь"
+        };
+
+        // Фильтруем элементы, которые начинаются на букву "м"
+        var filteredWords = words.Where(word => word.StartsWith("м")).ToList();
+
+        // Выводим отфильтрованные слова
+        Console.WriteLine("Слова, начинающиеся на 'м':");
+        foreach (var word in filteredWords)
+        {
+            Console.WriteLine(word);
+        }
+    }
+}
