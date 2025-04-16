@@ -6,7 +6,6 @@ class Program
 {
     static void Main()
     {
-        // Создаем список строк
         List<string> words = new List<string>
         {
             "мир",
@@ -18,10 +17,8 @@ class Program
             "медведь"
         };
 
-        // Фильтруем элементы, которые начинаются на букву "м"
         var filteredWords = words.Where(word => word.StartsWith("м")).ToList();
 
-        // Выводим отфильтрованные слова
         Console.WriteLine("Слова, начинающиеся на 'м':");
         foreach (var word in filteredWords)
         {
