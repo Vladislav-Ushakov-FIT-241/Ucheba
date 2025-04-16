@@ -1,0 +1,36 @@
+using System;
+
+class Program
+{
+    static void Main()
+    {
+
+        Func<double, double, double> add = (x, y) => x + y;
+        Func<double, double, double> subtract = (x, y) => x - y;
+        Func<double, double, double> multiply = (x, y) => x * y;
+        Func<double, double, double> divide = (x, y) =>
+        {
+            if (y == 0)
+            {
+                throw new DivideByZeroException("Деление на ноль невозможно");
+            }
+            return x / y;
+        };
+
+        double a = 10;
+        double b = 0;
+
+        Console.WriteLine($"Сложение: {add(a, b)}");
+        Console.WriteLine($"Вычитание: {subtract(a, b)}");
+        Console.WriteLine($"Умножение: {multiply(a, b)}");
+
+        try
+        {
+            Console.WriteLine($"Деление: {divide(a, b)}");
+        }
+        catch (DivideByZeroException ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+}
