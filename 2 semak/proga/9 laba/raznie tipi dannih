@@ -1,0 +1,57 @@
+using System;
+public class ObjectArray
+{
+    private object[] _array;
+    private int _size;
+    private int _maxsize;
+    public ObjectArray(int maxsize = 4)
+    {
+        _maxsize = maxsize;
+        _array = new object[_maxsize];
+        _size = 0;
+    }
+    public void Add(object item)
+    {
+        if (_size >= _maxsize)
+        {
+            Resize();
+        }
+        _array[_size] = item;
+        _size++;
+    }
+    public void RemoveAt(int index)
+    {
+        for (int i = index; i < _size - 1; i++)
+        {
+            _array[i] = _array[i + 1];
+        }
+        _array[_size - 1] = null;
+        _size--;
+    }
+    public object Get(int index)
+    {
+        return _array[index];
+    }
+    public int Size => _size;
+    private void Resize()
+    {
+        _maxsize++;
+        object[] newArray = new object[_maxsize];
+        Array.Copy(_array, newArray, _size);
+        _array = newArray;
+    }
+}
+/*
+class Program
+{
+    static void Main(string[] args)
+    {
+        ObjectArray objectArray = new ObjectArray();
+        objectArray.Add(666);
+        objectArray.Add(":)");
+        objectArray.Add(4.5679879874);
+        Console.WriteLine(objectArray.Get(1));
+        objectArray.RemoveAt(1);
+        Console.WriteLine(objectArray.Get(1));
+    }
+}
