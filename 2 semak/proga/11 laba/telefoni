@@ -1,0 +1,105 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+class Phone
+{
+    public string Brand { get; set; }
+    public int Year { get; set; }
+    public string Country { get; set; }
+    public Phone(string brand, int year, string country)
+    {
+        Brand = brand;
+        Year = year;
+        Country = country;
+    }
+}
+class Program
+{
+    static void Main()
+    {
+        List<Phone> phones = new List<Phone>();
+        bool exit = false;
+        while (!exit)
+        {
+            Console.WriteLine("Меню:");
+            Console.WriteLine("1. Добавить телефон");
+            Console.WriteLine("2. Сгруппировать телефоны по стране");
+            Console.WriteLine("3. Выдать телефоны с заданным годом выпуска");
+            Console.WriteLine("4. Сгруппировать телефоны по марке");
+            Console.WriteLine("5. Выход");
+            Console.Write("Выберите опцию: ");
+            string choice = Console.ReadLine();
+            switch (choice)
+            {
+                case "1":
+                    AddPhone(phones);
+                    break;
+                case "2":
+                    GroupByCountry(phones);
+                    break;
+                case "3":
+                    FilterByYear(phones);
+                    break;
+                case "4":
+                    GroupByBrand(phones);
+                    break;
+                case "5":
+                    exit = true;
+                    break;
+                default:
+                    Console.WriteLine("Неверный выбор");
+                    break;
+            }
+        }
+    }
+    static void AddPhone(List<Phone> phones)
+    {
+        Console.Write("Введите марку телефона: ");
+        string brand = Console.ReadLine();
+        Console.Write("Введите год выпуска: ");
+        int year = int.Parse(Console.ReadLine());
+        Console.Write("Введите страну использования: ");
+        string country = Console.ReadLine();
+        phones.Add(new Phone(brand, year, country));
+        Console.WriteLine("Телефон добавлен");
+    }
+    static void GroupByCountry(List<Phone> phones)
+    {
+        var groupedByCountry = phones.GroupBy(p => p.Country);
+        foreach (var group in groupedByCountry)
+        {
+            Console.WriteLine($"Страна: {group.Key}");
+            foreach (var phone in group)
+            {
+                Console.WriteLine($" - Марка: {phone.Brand}, Год: {phone.Year}");
+            }
+        }
+    }
+    static void FilterByYear(List<Phone> phones)
+    {
+        Console.Write("Введите год выпуска для поиска: ");
+        int year = int.Parse(Console.ReadLine());
+        var filteredPhones = phones.Where(p => p.Year == year);
+        if (!filteredPhones.Any())
+        {
+            Console.WriteLine("Телефоны не найдены");
+            return;
+        }
+        foreach (var phone in filteredPhones)
+        {
+            Console.WriteLine($"Марка: {phone.Brand}, Год: {phone.Year}, Страна: {phone.Country}");
+        }
+    }
+    static void GroupByBrand(List<Phone> phones)
+    {
+        var groupedByBrand = phones.GroupBy(p => p.Brand);
+        foreach (var group in groupedByBrand)
+        {
+            Console.WriteLine($"Марка: {group.Key}");
+            foreach (var phone in group)
+            {
+                Console.WriteLine($" - Год: {phone.Year}, Страна: {phone.Country}");
+            }
+        }
+    }
+}
