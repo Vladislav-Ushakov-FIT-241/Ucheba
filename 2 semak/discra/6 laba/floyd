@@ -1,0 +1,30 @@
+import math
+
+def floyd(weight_matrix):
+    dist = weight_matrix
+
+    for k in range(len(weight_matrix)):
+        for i in range(len(weight_matrix)):
+            for j in range(len(weight_matrix)):
+                if dist[i][k] != math.inf and dist[k][j] != math.inf and dist[i][k] + dist[k][j] < dist[i][j]:
+                    dist[i][j] = dist[i][k] + dist[k][j]
+
+    for i in range(len(weight_matrix)):
+        if dist[i][i] < 0:
+            print("В графе есть отрицательный цикл")
+            return None
+
+    return dist
+
+weight_matrix = [
+    [0, 2, math.inf, 4, 13],
+    [2, 0, 6, 8, math.inf],
+    [3, math.inf, 0, 5, 6],
+    [math.inf, 6, 5, 0, 9],
+    [7, 8, 7, 2, 0]
+]
+result = floyd(weight_matrix)
+if result:
+    print("Кратчайшие расстояния:")
+    for i in range(len(result)):
+        print(f"От вершины {i + 1}: {result[i]}")
