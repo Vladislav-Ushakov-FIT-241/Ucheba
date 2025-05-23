@@ -1,0 +1,33 @@
+import math
+
+def ford_bellman_matrix(weight_matrix, start_node):
+    dist = [math.inf] * len(weight_matrix)
+    dist[start_node] = 0
+
+    for k in range(len(weight_matrix) - 1):
+        for i in range(len(weight_matrix)):
+            for j in range(len(weight_matrix)):
+                if dist[i] != math.inf and dist[i] + weight_matrix[i][j] < dist[j]:
+                    dist[j] = dist[i] + weight_matrix[i][j]
+
+    for i in range(len(weight_matrix)):
+        for j in range(len(weight_matrix)):
+            if dist[i] != math.inf and dist[i] + weight_matrix[i][j] < dist[j]:
+                print("В графе есть отрицательный цикл")
+                return None
+
+    return dist
+
+weight_matrix = [
+    [0, 2, math.inf, 4, 13],
+    [2, 0, 6, 8, math.inf],
+    [3, math.inf, 0, 5, 6],
+    [math.inf, 6, 5, 0, 9],
+    [7, 8, 7, 2, 0]
+]
+start_node = 2  # отсчет с 0
+result = ford_bellman_matrix(weight_matrix, start_node)
+if result:
+    print(f"Кратчайшие расстояния от вершины {start_node + 1}:")
+    for i, distance in enumerate(result):
+        print(f"До вершины {i + 1}: {distance}")
