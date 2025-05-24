@@ -1,0 +1,46 @@
+import math
+from collections import deque
+
+def shortest_path(matrix, start, end):
+    rows = len(matrix)
+    cols = len(matrix[0])
+
+    distance = [[-1 for _ in range(cols)] for _ in range(rows)]
+    distance[start[0]][start[1]] = 0
+
+    queue = deque()
+    queue.append(start)
+
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1),(-1, -1), (-1, 1), (1, -1), (1, 1)] # это ходы. если по диагонали ходить нельзя, удалите последние 4
+
+    while queue:
+        x, y = queue.popleft()
+
+        if (x, y) == end:
+            return distance[x][y]
+
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < rows and 0 <= ny < cols:
+                if matrix[nx][ny] == 0 and distance[nx][ny] == -1:
+                    distance[nx][ny] = distance[x][y] + 1
+                    queue.append((nx, ny))
+
+    return "Конечную точку нельзя достичь"
+
+
+# 0 - свободная клетка, x - препятствие
+x=math.inf
+matrix = [
+    [0, x, 0, 0, 0],
+    [0, x, 0, x, 0],
+    [0, x, x, x, 0],
+    [0, 0, 0, x, 0],
+    [0, x, 0, 0, 0]
+]
+
+start = (1, 2)
+end = (0, 0)
+
+result = shortest_path(matrix, start, end)
+print(f"Кратчайший путь: {result}")
