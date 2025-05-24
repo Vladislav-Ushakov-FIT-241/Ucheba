@@ -1,0 +1,33 @@
+import itertools
+import math
+
+def little(matrix):
+    path = []
+    current_city = 0
+    cost = 0
+    unvisited_cities = set(range(1, len(matrix)))
+
+    while unvisited_cities:
+        next_city = min(unvisited_cities, key=lambda city: matrix[current_city][city])
+        path.append((current_city, next_city))
+        cost += matrix[current_city][next_city]
+        unvisited_cities.remove(next_city)
+        current_city = next_city
+
+    path.append((current_city, 0))
+    cost += matrix[current_city][0]
+
+    return path, cost
+
+x=math.inf
+matrix = [
+    [x, 2, 5, 8],
+    [2, x, 7, 1],
+    [5, 7, x, 14],
+    [8, 1, 14, x]
+]
+
+path, cost = little(matrix)
+
+print("Путь:", path)
+print("Стоимость:", cost)
