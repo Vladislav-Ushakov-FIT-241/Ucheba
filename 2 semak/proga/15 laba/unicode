@@ -1,0 +1,76 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        Console.WriteLine("Введите текст (для завершения введите пустую строку):");
+        string text = "";
+        string line;
+        while (!string.IsNullOrEmpty(line = Console.ReadLine()))
+        {
+            text += line + Environment.NewLine;
+        }
+
+        Span<int> charFrequencies = stackalloc int[256];
+
+        for (int i = 0; i < text.Length; i++)
+        {
+            char c = text[i];
+            if (c < 256)
+            {
+                charFrequencies[c]++;
+            }
+        }
+
+        int minFrequency = int.MaxValue;
+        for (int i = 0; i < charFrequencies.Length; i++)
+        {
+            if (charFrequencies[i] > 0 && charFrequencies[i] < minFrequency)
+            {
+                minFrequency = charFrequencies[i];
+            }
+        }
+
+        List<char> leastFrequentChars = new List<char>();
+        for (int i = 0; i < charFrequencies.Length; i++)
+        {
+            if (charFrequencies[i] == minFrequency)
+            {
+                leastFrequentChars.Add((char)i);
+            }
+        }
+
+        int maxFrequency = 0;
+        for (int i = 0; i < charFrequencies.Length; i++)
+        {
+            if (charFrequencies[i] > maxFrequency)
+            {
+                maxFrequency = charFrequencies[i];
+            }
+        }
+
+        List<char> mostFrequentChars = new List<char>();
+        for (int i = 0; i < charFrequencies.Length; i++)
+        {
+            if (charFrequencies[i] == maxFrequency)
+            {
+                mostFrequentChars.Add((char)i);
+            }
+        }
+
+        Console.WriteLine("Символы, встречающиеся реже всего:");
+        foreach (char c in leastFrequentChars)
+        {
+            Console.WriteLine(c);
+        }
+
+        Console.WriteLine("Символы, встречающиеся чаще всего:");
+        foreach (char c in mostFrequentChars)
+        {
+            Console.WriteLine(c);
+        }
+    }
+}
