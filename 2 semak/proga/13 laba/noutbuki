@@ -1,0 +1,163 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public class Computer
+{
+    public int ComputerId { get; set; }
+    public string Brand { get; set; }
+    public string Model { get; set; }
+}
+
+public class OperatingSystem
+{
+    public int OperatingSystemId { get; set; }
+    public string Name { get; set; }
+}
+
+public class User
+{
+    public int UserId { get; set; }
+    public string FullName { get; set; }
+    public bool HasLaptop { get; set; }
+    public string LaptopBrand { get; set; }
+    public int? OperatingSystemId { get; set; }
+}
+
+public class DataService
+{
+    private List<Computer> Computers { get; set; }
+    private List<OperatingSystem> OperatingSystems { get; set; }
+    private List<User> Users { get; set; }
+
+    public DataService()
+    {
+        Computers = new List<Computer>()
+        {
+            new Computer { ComputerId = 1, Brand = "MSI", Model = "Katana" },
+            new Computer { ComputerId = 2, Brand = "ASUS", Model = "Rog Strix" },
+            new Computer { ComputerId = 3, Brand = "Apple", Model = "MacBook Pro" }
+        };
+
+        OperatingSystems = new List<OperatingSystem>()
+        {
+            new OperatingSystem { OperatingSystemId = 1, Name = "Windows 10" },
+            new OperatingSystem { OperatingSystemId = 2, Name = "Windows 11" },
+            new OperatingSystem { OperatingSystemId = 3, Name = "macOS" }
+        };
+
+        Users = new List<User>()
+        {
+            new User { UserId = 1, FullName = "Вокашу Владислав", HasLaptop = true, LaptopBrand = "MSI", OperatingSystemId = 1 },
+            new User { UserId = 2, FullName = "Снижний Роман", HasLaptop = true, LaptopBrand = "ASUS", OperatingSystemId = 1 },
+            new User { UserId = 3, FullName = "Романов Григорий", HasLaptop = false, LaptopBrand = null, OperatingSystemId = null },
+            new User { UserId = 4, FullName = "Кравчан Славян", HasLaptop = true, LaptopBrand = "Apple", OperatingSystemId = 3 },
+            new User { UserId = 5, FullName = "Росомаха Андрей", HasLaptop = false, LaptopBrand = null, OperatingSystemId = null },
+            new User { UserId = 6, FullName = "Кудя Костя", HasLaptop = true, LaptopBrand = "MSI", OperatingSystemId = 2 }
+        };
+    }
+
+    public Dictionary<bool, List<string>> GetUsersGroupedByLaptopPresence()
+    {
+        return Users.GroupBy(u => u.HasLaptop)
+                    .ToDictionary(g => g.Key, g => g.Select(u => u.FullName).ToList());
+    }
+
+    public Dictionary<string, List<string>> GetUsersGroupedByLaptopBrand()
+    {
+        return Users.Where(u => u.HasLaptop)
+                    .GroupBy(u => u.LaptopBrand)
+                    .ToDictionary(g => g.Key, g => g.Select(u => u.FullName).ToList());
+    }
+
+    public Dictionary<string, List<string>> GetUsersGroupedByOperatingSystem()
+    {
+        return Users.Where(u => u.HasLaptop && u.OperatingSystemId != null)
+                    .Join(OperatingSystems,
+                          user => user.OperatingSystemId,
+                          os => os.OperatingSystemId,
+                          (user, os) => new { UserName = user.FullName, OSName = os.Name })
+                    .GroupBy(x => x.OSName)
+                    .ToDictionary(g => g.Key, g => g.Select(x => x.UserName).ToList());
+    }
+
+    public List<object> GetAllUserData()
+    {
+        return Users.GroupJoin(
+                OperatingSystems,
+                user => user.OperatingSystemId,
+                os => os.OperatingSystemId,
+                (user, osCollection) => new
+                {
+                    UserName = user.FullName,
+                    HasLaptop = user.HasLaptop,
+                    LaptopBrand = user.LaptopBrand,
+                    OperatingSystemName = osCollection.FirstOrDefault()?.Name ?? "Нет ОС",
+                    user.UserId
+                })
+                .GroupJoin(Computers,
+                            userOs => userOs.LaptopBrand, computer => computer.Brand,
+                            (userOs, computers) => new
+                            {
+                                userOs.UserName,
+                                userOs.HasLaptop,
+                                userOs.LaptopBrand,
+                                userOs.OperatingSystemName,
+                                Model = computers.FirstOrDefault()?.Model ?? "Неизвестно"
+                            }
+
+                )
+                .ToList<object>();
+    }
+}
+
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        DataService dataService = new DataService();
+
+        var usersByLaptopPresence = dataService.GetUsersGroupedByLaptopPresence();
+        Console.WriteLine("Пользователи, сгруппированные по наличию ноутбука:");
+        foreach (var group in usersByLaptopPresence)
+        {
+            Console.WriteLine($"Есть ноутбук: {group.Key}");
+            foreach (var user in group.Value)
+            {
+                Console.WriteLine($"  - {user}");
+            }
+        }
+        Console.WriteLine();
+
+        var usersByLaptopBrand = dataService.GetUsersGroupedByLaptopBrand();
+        Console.WriteLine("Пользователи, сгруппированные по марке ноутбука:");
+        foreach (var group in usersByLaptopBrand)
+        {
+            Console.WriteLine($"Марка ноутбука: {group.Key}");
+            foreach (var user in group.Value)
+            {
+                Console.WriteLine($"  - {user}");
+            }
+        }
+        Console.WriteLine();
+
+        var usersByOperatingSystem = dataService.GetUsersGroupedByOperatingSystem();
+        Console.WriteLine("Пользователи, сгруппированные по операционной системе:");
+        foreach (var group in usersByOperatingSystem)
+        {
+            Console.WriteLine($"Операционная система: {group.Key}");
+            foreach (var user in group.Value)
+            {
+                Console.WriteLine($"  - {user}");
+            }
+        }
+        Console.WriteLine();
+
+        var allUserData = dataService.GetAllUserData();
+        Console.WriteLine("Все данные:");
+        foreach (var data in allUserData)
+        {
+            Console.WriteLine(data);
+        }
+    }
+}
