@@ -1,0 +1,103 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+
+public class CityChain
+{
+    public static void Main(string[] args)
+    {
+        string inputFile = "input_s1_02.txt";
+        List<string> cities = new List<string>();
+
+        using (StreamReader reader = new StreamReader(inputFile))
+        {
+            string line;
+            while ((line = reader.ReadLine()) != null)
+            {
+                cities.Add(line);
+            }
+        }
+
+        List<int> chainLengths = new List<int>();
+
+        while (cities.Count > 0)
+        {
+            List<string> longestChain = FindLongestCyclicChain(cities);
+            chainLengths.Add(longestChain.Count);
+
+            foreach (string city in longestChain)
+            {
+                cities.Remove(city);
+            }
+        }
+
+        Console.WriteLine(chainLengths.Count);
+        foreach (int length in chainLengths.OrderByDescending(x => x))
+        {
+            Console.WriteLine(length);
+        }
+    }
+
+    private static List<string> FindLongestCyclicChain(List<string> availableCities)
+    {
+        List<string> longestChain = new List<string>();
+
+        for (int i = 0; i < availableCities.Count; i++)
+        {
+            string startCity = availableCities[i];
+            List<string> currentChain = new List<string>() { startCity };
+            List<string> remainingCities = availableCities.ToList();
+            remainingCities.RemoveAt(i);
+
+            List<string> chain = ExtendChain(currentChain, remainingCities, startCity[0]);
+
+            if (chain.Count > longestChain.Count)
+            {
+                longestChain = chain;
+            }
+        }
+
+        return longestChain;
+    }
+
+
+    private static List<string> ExtendChain(List<string> currentChain, List<string> remainingCities, char startChar)
+    {
+        string lastCity = currentChain.Last();
+        char lastChar = lastCity.Last();
+        List<string> longestChain = currentChain.ToList();
+
+        for (int i = 0; i < remainingCities.Count; i++)
+        {
+            string nextCity = remainingCities[i];
+            if (nextCity[0] == lastChar)
+            {
+                List<string> nextChain = currentChain.ToList();
+                nextChain.Add(nextCity);
+
+                List<string> nextRemainingCities = remainingCities.ToList();
+                nextRemainingCities.RemoveAt(i);
+
+                if (nextChain.Last().Last() == startChar && nextChain.Count > 1)
+                {
+                    if (nextChain.Count > longestChain.Count)
+                        longestChain = nextChain;
+                }
+
+                List<string> extendedChain = ExtendChain(nextChain, nextRemainingCities, startChar);
+                if (extendedChain.Last().Last() == startChar && extendedChain.Count > 1)
+                {
+                    if (extendedChain.Count > longestChain.Count)
+                        longestChain = extendedChain;
+                }
+                else if (extendedChain.Count > longestChain.Count)
+                {
+                    longestChain = extendedChain;
+                }
+
+            }
+        }
+        return longestChain;
+    }
+}
