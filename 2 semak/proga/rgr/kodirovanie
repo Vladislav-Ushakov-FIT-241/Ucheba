@@ -1,0 +1,92 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+
+class Program
+{
+    static int[,] image;
+    static List<string> result = new List<string>();
+    static List<(int x, int y, int w, int h)> zQueue = new List<(int, int, int, int)>();
+
+    static void Main()
+    {
+        string inputPath = "input_s1_01.txt";
+
+        string[] lines = File.ReadAllLines(inputPath);
+        string[] dims = lines[0].Split();
+        int W = int.Parse(dims[0]);
+        int H = int.Parse(dims[1]);
+
+        image = new int[H, W];
+        for (int i = 0; i < H; i++)
+        {
+            string[] row = lines[i + 1].Split();
+            for (int j = 0; j < W; j++)
+            {
+                image[i, j] = int.Parse(row[j]);
+            }
+        }
+
+        result.Add($"{W} {H}");
+
+        if (IsUniform(0, 0, W, H, out int color))
+        {
+            result.Add(color.ToString());
+        }
+        else
+        {
+            result.Add("Z");
+            zQueue.Add((0, 0, W, H));
+
+            int index = 0;
+            while (index < zQueue.Count)
+            {
+                var (x, y, w, h) = zQueue[index];
+                result.Add(ProcessBlock(x, y, w, h));
+                index++;
+            }
+        }
+
+        foreach (string line in result)
+        {
+            Console.WriteLine(line);
+        }
+    }
+
+    static string ProcessBlock(int x, int y, int w, int h)
+    {
+        int wMid = w / 2;
+        int hMid = h / 2;
+        int wLeft = w - wMid;
+        int hTop = h - hMid;
+
+        string LT = ProcessSubBlock(x, y, wLeft, hTop);
+        string RT = ProcessSubBlock(x + wLeft, y, wMid, hTop);
+        string LB = ProcessSubBlock(x, y + hTop, wLeft, hMid);
+        string RB = ProcessSubBlock(x + wLeft, y + hTop, wMid, hMid);
+
+        return $"{LT} {RT} {LB} {RB}";
+    }
+
+    static string ProcessSubBlock(int x, int y, int w, int h)
+    {
+        if (w <= 0 || h <= 0)
+            return "-";
+
+        if (IsUniform(x, y, w, h, out int color))
+            return color.ToString();
+
+        zQueue.Add((x, y, w, h));
+        return "Z";
+    }
+
+    static bool IsUniform(int x, int y, int w, int h, out int color)
+    {
+        color = image[y, x];
+        for (int i = y; i < y + h; i++)
+            for (int j = x; j < x + w; j++)
+                if (image[i, j] != color)
+                    return false;
+        return true;
+    }
+}
