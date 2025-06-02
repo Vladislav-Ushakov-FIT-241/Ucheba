@@ -1,0 +1,116 @@
+using System;
+using System.Globalization;
+using System.IO;
+
+class Program
+{
+    static void Main()
+    {
+        CultureInfo culture = CultureInfo.InvariantCulture;
+        string[] inputLines = File.ReadAllLines("input_s1_03.txt");
+        int Nminus1 = int.Parse(inputLines[0]);
+
+        double x = 0, y = 0, theta = 0;
+
+        for (int i = 1; i <= Nminus1; i++)
+        {
+            string[] parts = inputLines[i].Split();
+            double L = double.Parse(parts[0], culture);
+            double R = double.Parse(parts[1], culture);
+            double phi = double.Parse(parts[2], culture);
+
+            x += L * Math.Cos(theta * Math.PI / 180);
+            y += L * Math.Sin(theta * Math.PI / 180);
+
+            if (phi > 0)
+            {
+                double cx = x - R * Math.Sin(theta * Math.PI / 180);
+                double cy = y + R * Math.Cos(theta * Math.PI / 180);
+                theta += phi;
+                x = cx + R * Math.Sin(theta * Math.PI / 180);
+                y = cy - R * Math.Cos(theta * Math.PI / 180);
+            }
+            else
+            {
+                double cx = x + R * Math.Sin(theta * Math.PI / 180);
+                double cy = y - R * Math.Cos(theta * Math.PI / 180);
+                theta += phi;
+                x = cx - R * Math.Sin(theta * Math.PI / 180);
+                y = cy + R * Math.Cos(theta * Math.PI / 180);
+            }
+            theta %= 360;
+        }
+
+        double requiredPhi = (360 - theta) % 360;
+        if (requiredPhi < 1 || requiredPhi > 359)
+        {
+            if (requiredPhi + 360 >= 1 && requiredPhi + 360 <= 359)
+                requiredPhi += 360;
+            else if (requiredPhi - 360 >= 1 && requiredPhi - 360 <= 359)
+                requiredPhi -= 360;
+            else
+            {
+                Console.WriteLine("NO");
+                return;
+            }
+        }
+
+        double cosTheta = Math.Cos(theta * Math.PI / 180);
+        double sinTheta = Math.Sin(theta * Math.PI / 180);
+
+        if (requiredPhi > 0)
+        {
+            double a = cosTheta;
+            double b = -sinTheta;
+            double c = sinTheta;
+            double d = cosTheta - 1;
+            double det = a * d - b * c;
+            if (Math.Abs(det) < 1e-9)
+            {
+                Console.WriteLine("NO");
+                return;
+            }
+            double L_sol = (-x * d - (-y) * b) / det;
+            double R_sol = (a * (-y) - c * (-x)) / det;
+
+            if (R_sol >= 1 && R_sol <= 100 && L_sol >= 0 && L_sol <= 500)
+                Console.WriteLine($"{L_sol.ToString("F3", culture)} {R_sol.ToString("F3", culture)} {requiredPhi.ToString("F3", culture)}");
+            else
+                Console.WriteLine("NO");
+        }
+        else
+        {
+            requiredPhi = -(360 - theta) % 360;
+            if (requiredPhi < -359 || requiredPhi > -1)
+            {
+                if (requiredPhi + 360 >= -359 && requiredPhi + 360 <= -1)
+                    requiredPhi += 360;
+                else if (requiredPhi - 360 >= -359 && requiredPhi - 360 <= -1)
+                    requiredPhi -= 360;
+                else
+                {
+                    Console.WriteLine("NO");
+                    return;
+                }
+            }
+
+            double a = cosTheta;
+            double b = sinTheta;
+            double c = sinTheta;
+            double d = 1 - cosTheta;
+            double det = a * d - b * c;
+            if (Math.Abs(det) < 1e-9)
+            {
+                Console.WriteLine("NO");
+                return;
+            }
+            double L_sol = (-x * d - (-y) * b) / det;
+            double R_sol = (a * (-y) - c * (-x)) / det;
+
+            if (R_sol >= 1 && R_sol <= 100 && L_sol >= 0 && L_sol <= 500)
+                Console.WriteLine($"{L_sol.ToString("F3", culture)} {R_sol.ToString("F3", culture)} {requiredPhi.ToString("F3", culture)}");
+            else
+                Console.WriteLine("NO");
+        }
+    }
+}
