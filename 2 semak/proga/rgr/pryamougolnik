@@ -1,0 +1,72 @@
+using System;
+using System.IO;
+
+public class MaxRectangle
+{
+    public static void Main(string[] args)
+    {
+        string inputFile = "input_s1_03.txt";
+        int maxArea = 0;
+
+        try
+        {
+            string[] lines = File.ReadAllLines(inputFile);
+            string[] dimensions = lines[0].Split(' ');
+            int n = int.Parse(dimensions[0]);
+            int m = int.Parse(dimensions[1]);
+            int k = int.Parse(lines[1]);
+
+            bool[,] grid = new bool[m, n];
+
+            for (int i = 0; i < k; i++)
+            {
+                string[] coordinates = lines[i + 2].Split(' ');
+                int x = int.Parse(coordinates[0]) - 1;
+                int y = int.Parse(coordinates[1]) - 1;
+
+                grid[y, x] = true;
+            }
+
+            for (int top = 0; top < m; top++)
+            {
+                for (int left = 0; left < n; left++)
+                {
+                    for (int bottom = top; bottom < m; bottom++)
+                    {
+                        for (int right = left; right < n; right++)
+                        {
+                            bool containsPainted = false;
+                            for (int row = top; row <= bottom; row++)
+                            {
+                                for (int col = left; col <= right; col++)
+                                {
+                                    if (grid[row, col])
+                                    {
+                                        containsPainted = true;
+                                        break;
+                                    }
+                                }
+                                if (containsPainted)
+                                {
+                                    break;
+                                }
+                            }
+
+                            if (!containsPainted)
+                            {
+                                int area = (bottom - top + 1) * (right - left + 1);
+                                maxArea = Math.Max(maxArea, area);
+                            }
+                        }
+                    }
+                }
+            }
+
+            Console.WriteLine(maxArea);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+}
