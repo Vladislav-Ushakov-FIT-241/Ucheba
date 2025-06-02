@@ -1,0 +1,133 @@
+using System;
+
+class Student
+{
+    public int Id { get; set; }          
+    public string FullName { get; set; } 
+    public Student Left { get; set; }    
+    public Student Right { get; set; }   
+
+    public Student(int id, string fullName)
+    {
+        Id = id;
+        FullName = fullName;
+        Left = null;
+        Right = null;
+    }
+}
+
+class BinaryTree
+{
+    private Student root; 
+
+    public BinaryTree()
+    {
+        root = null;
+    }
+
+    public void AddStudent(int id, string fullName)
+    {
+        Student newStudent = new Student(id, fullName);
+
+        if (root == null)
+        {
+            root = newStudent;
+        }
+        else
+        {
+            AddStudentRecursive(root, newStudent);
+        }
+    }
+
+    private void AddStudentRecursive(Student current, Student newStudent)
+    {
+        if (newStudent.Id < current.Id)
+        {
+            if (current.Left == null)
+            {
+                current.Left = newStudent;
+            }
+            else
+            {
+                AddStudentRecursive(current.Left, newStudent);
+            }
+        }
+        else
+        {
+            if (current.Right == null)
+            {
+                current.Right = newStudent;
+            }
+            else
+            {
+                AddStudentRecursive(current.Right, newStudent);
+            }
+        }
+    }
+
+    public Student FindStudent(int id)
+    {
+        return FindStudentRecursive(root, id);
+    }
+
+    private Student FindStudentRecursive(Student current, int id)
+    {
+        if (current == null)
+        {
+            return null;
+        }
+
+        if (id == current.Id)
+        {
+            return current;
+        }
+
+        return id < current.Id
+            ? FindStudentRecursive(current.Left, id)
+            : FindStudentRecursive(current.Right, id);
+    }
+
+    public void InOrderTraversal()
+    {
+        InOrderTraversalRecursive(root);
+    }
+
+    private void InOrderTraversalRecursive(Student current)
+    {
+        if (current != null)
+        {
+            InOrderTraversalRecursive(current.Left);
+            Console.WriteLine($"ID: {current.Id}, ФИО: {current.FullName}");
+            InOrderTraversalRecursive(current.Right);
+        }
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        BinaryTree studentTree = new BinaryTree();
+
+        studentTree.AddStudent(100, "Безверхний Роман Сергеевич");
+        studentTree.AddStudent(50, "Кравченко Вячеслав Кириллович");
+        studentTree.AddStudent(150, "Григорьев Роман Павлович");
+        studentTree.AddStudent(25, "Россинский Андрей Викторович");
+        studentTree.AddStudent(75, "Ушаков Владислав Эдуардович");
+        studentTree.AddStudent(125, "Кудинов Константин Олегович");
+
+        Console.WriteLine("Список студентов (отсортированный по ID):");
+        studentTree.InOrderTraversal();
+
+        Console.WriteLine("\nПоиск студента с ID 75:");
+        Student foundStudent = studentTree.FindStudent(75);
+        if (foundStudent != null)
+        {
+            Console.WriteLine($"Найден студент: {foundStudent.FullName}");
+        }
+        else
+        {
+            Console.WriteLine("Студент не найден");
+        }
+    }
+}
