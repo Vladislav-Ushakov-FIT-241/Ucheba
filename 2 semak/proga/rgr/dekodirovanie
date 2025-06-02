@@ -1,0 +1,182 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+
+class Program
+{
+    class Segment
+    {
+        public int X, Y, Width, Height;
+        public string Descriptor;
+    }
+
+    static void Main()
+    {
+        string[] lines;
+        try
+        {
+            lines = File.ReadAllLines("input_s1_02.txt");
+        }
+        catch (FileNotFoundException)
+        {
+            Console.WriteLine("Файл не найден");
+            return;
+        }
+
+        var cleanedLines = new List<string>();
+        foreach (var line in lines)
+        {
+            var trimmed = line.Trim();
+            if (trimmed.Length > 0)
+                cleanedLines.Add(trimmed);
+        }
+
+        if (cleanedLines.Count < 2)
+        {
+            Console.WriteLine("Недостаточно данных во входном файле");
+            return;
+        }
+
+        var wh = cleanedLines[0].Split();
+        if (wh.Length != 2)
+        {
+            Console.WriteLine("Некорректный формат размеров изображения");
+            return;
+        }
+
+        if (!int.TryParse(wh[0], out int W) || !int.TryParse(wh[1], out int H) ||
+            W < 1 || W > 1000 || H < 1 || H > 1000)
+        {
+            Console.WriteLine("Некорректные размеры изображения");
+            return;
+        }
+
+        int[,] image = new int[H, W];
+        var root = cleanedLines[1];
+
+        var zDescriptors = new List<string>();
+        for (int i = 2; i < cleanedLines.Count; i++)
+            zDescriptors.Add(cleanedLines[i]);
+
+        var queue = new Queue<Segment>();
+        int zIndex = 0;
+
+        if (root == "Z")
+        {
+            if (zDescriptors.Count == 0)
+            {
+                Console.WriteLine("Отсутствуют дескрипторы для корневого Z-узла");
+                return;
+            }
+            queue.Enqueue(new Segment
+            {
+                X = 0,
+                Y = 0,
+                Width = W,
+                Height = H,
+                Descriptor = zDescriptors[zIndex++]
+            });
+        }
+        else if (int.TryParse(root, out int rootColor) && rootColor >= 0 && rootColor <= 255)
+        {
+            Fill(image, 0, 0, W, H, rootColor);
+        }
+        else
+        {
+            Console.WriteLine("Некорректный цвет корневого узла");
+            return;
+        }
+
+        while (queue.Count > 0)
+        {
+            var seg = queue.Dequeue();
+            Process(image, seg, queue, zDescriptors, ref zIndex);
+        }
+
+        for (int y = 0; y < H; y++)
+        {
+            for (int x = 0; x < W; x++)
+            {
+                if (x > 0) Console.Write(" ");
+                Console.Write(image[y, x]);
+            }
+            Console.WriteLine();
+        }
+    }
+
+    static void Process(int[,] image, Segment seg, Queue<Segment> queue,
+                       List<string> zDescriptors, ref int zIndex)
+    {
+        if (seg.Descriptor != "Z")
+        {
+            if (int.TryParse(seg.Descriptor, out int color) && color >= 0 && color <= 255)
+            {
+                Fill(image, seg.X, seg.Y, seg.Width, seg.Height, color);
+            }
+            else
+            {
+                throw new Exception($"Некорректный цвет: {seg.Descriptor}");
+            }
+            return;
+        }
+
+        if (zIndex >= zDescriptors.Count)
+            throw new Exception("Недостаточно дескрипторов Z-узлов");
+
+        var parts = zDescriptors[zIndex++].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length != 4)
+            throw new Exception("Дескриптор Z-узла должен содержать 4 части");
+
+        int leftW = seg.Width / 2 + (seg.Width % 2);
+        int rightW = seg.Width / 2;
+        int topH = seg.Height / 2 + (seg.Height % 2);
+        int bottomH = seg.Height / 2;
+
+        if (parts[0] != "-")
+            queue.Enqueue(new Segment
+            {
+                X = seg.X,
+                Y = seg.Y,
+                Width = leftW,
+                Height = topH,
+                Descriptor = parts[0]
+            });
+
+        if (parts[1] != "-")
+            queue.Enqueue(new Segment
+            {
+                X = seg.X + leftW,
+                Y = seg.Y,
+                Width = rightW,
+                Height = topH,
+                Descriptor = parts[1]
+            });
+
+        if (parts[2] != "-")
+            queue.Enqueue(new Segment
+            {
+                X = seg.X,
+                Y = seg.Y + topH,
+                Width = leftW,
+                Height = bottomH,
+                Descriptor = parts[2]
+            });
+
+        if (parts[3] != "-")
+            queue.Enqueue(new Segment
+            {
+                X = seg.X + leftW,
+                Y = seg.Y + topH,
+                Width = rightW,
+                Height = bottomH,
+                Descriptor = parts[3]
+            });
+    }
+
+    static void Fill(int[,] image, int x, int y, int w, int h, int color)
+    {
+        for (int i = y; i < y + h && i < image.GetLength(0); i++)
+            for (int j = x; j < x + w && j < image.GetLength(1); j++)
+                image[i, j] = color;
+    }
+}
